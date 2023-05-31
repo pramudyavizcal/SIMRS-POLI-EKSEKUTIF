@@ -1,0 +1,652 @@
+<?
+
+	//----------------------------- Bulan Yang Ditampilkan
+	function BulanTampil($month,$year,$Kondisi) {		
+		$Aktif = MonthYearAktif($month,$year,$Kondisi);
+		$BlnSkr = $Aktif["b"];
+		$StrBlnSkr = $Aktif["B"];
+		$ySkr = $Aktif["th"];
+		$yStr = $Aktif["TH"];
+		 $hsl = $BlnSkr % 12;
+		 if ($hsl == 0) {
+			 $bln = 12;
+		 } else {
+			 $bln = $hsl;
+		}
+		 return $Tgl = array ("b" => $bln,
+								"y" => $ySkr);
+	}
+	//------------------------------------------Tampil Kalender bulan Ini
+	function KalenderLibur($month,$year,$Kondisi) {		
+		$Aktif = MonthYearAktif($month,$year,$Kondisi);
+		$BlnSkr = $Aktif["b"];
+		$StrBlnSkr = $Aktif["B"];
+		$ySkr = $Aktif["th"];
+		$yStr = $Aktif["TH"];
+		echo "<form id='formKalender' name='formKalender' method='post' action='$PHP_SHELF'>";
+	  	echo "<table width='50%' border='0' cellpadding='0' cellspacing='0'>";
+		echo "<tr bgcolor='#666600'>";
+		echo "<td width='13%' height='45' align='center'><input name='Pre' type='submit' id='Pre' value='&lt;&lt;' /></td>";
+		echo "<td height='45' colspan='5' align='center'><table width='70%' border='0'>";
+			echo "<tr>";
+			echo "  <td width='102' align='right' class='subHeader'><input name='BlnAktif' type='hidden' id='BlnAktif' value='$BlnSkr' />		$StrBlnSkr</td>";
+			echo "  <td width='10' class='subHeader'>&nbsp;</td>";
+			echo "  <td width='60' class='subHeader'><input name='yAktif' type='hidden' id='yAktif' value='$ySkr' />$yStr</td></tr>";
+			echo "</table></td>";
+		  echo "<td width='17%' height='45' align='center'><input name='Next' type='submit' id='Next' value='&gt;&gt;' /></td></tr>";
+		  echo "<tr>";
+		  echo "<td colspan='7'><hr /></td></tr>";
+		  echo "<tr bgcolor='#669900'>";
+		  echo "<td align='center' class='bodyText'>Senin</td>";
+		  echo "<td width='15%' align='center' class='bodyText'>Selasa</td>";
+		  echo "<td width='12%' align='center' class='bodyText'>Rabu</td>";
+		  echo "<td width='15%' align='center' class='bodyText'>Kamis</td>";
+		  echo "<td width='11%' align='center' class='bodyText'>Jum'at</td>";
+		  echo "<td width='17%' align='center' class='bodyText'>Sabtu</td>";
+		  echo "<td align='center' class='bodyText'>Minggu</td></tr>";
+
+		$Tgl = Hari($BlnSkr,$ySkr); 
+		$JmlHari = $Tgl["Jml"];
+		$hari = $Tgl["Hr"];
+		$s = 0;
+		$dt = 1;
+		$yr = date("Y", mktime(0,0,0,$BlnSkr,1,$ySkr));
+		for ($tg = 0; $tg < 7; $tg++) {
+			echo "<tr bgcolor='#C6FF4F'>";
+			for ($i = 0; $i < 7; $i++) {
+				if (($s >= $hari) and ($s <= ($JmlHari + ($hari - 1)))) {
+					$df = Harilibur($BlnSkr,$yr,$dt);
+					if ($df["Dur"] == 0) {
+						$r = $r;
+						$HolDate = $HolDate + 1;
+						$H_id = $H_id;							
+						$KtName = $KtName;
+						} else {
+							$r = $df["Dur"];
+							$HolDate = $df["Tgl"];
+							$H_id = $df["ID"];							
+							$KtName = $df["Ket"];
+					}
+					if (($HolDate == $dt) and ($r != 0)) {
+						echo "<td align='center' id='navigation'><a href='Kalender.php?t=$dt&m=$BlnSkr&y=$ySkr&id=$H_id&dur=$r&Ket=$KtName' alt='$KtName' target='_self'>$dt</a></td>";
+						$r = $r - 1;
+					} else {
+						$r = 0;
+						echo "<td align='center' class='bodyText'><a href='Kalender.php?t=$dt&m=$BlnSkr&y=$ySkr&id=0&dur=$r&Ket=$KtName' target='_self'>$dt</a></td>";
+					}
+					$dt = $dt + 1;
+				} else {
+					echo "<td align='center' class='bodyText'></td>";
+				}
+				$s = $s + 1;
+			}
+			echo "</tr>";
+		}
+	 echo "</table>	</form>";
+}
+
+	//------------------------------------------Tampil bulan Ini
+	function MonthViewKal($month,$year,$Kondisi) {		
+		$Aktif = MonthYearAktif($month,$year,$Kondisi);
+		$BlnSkr = $Aktif["b"];
+		$StrBlnSkr = $Aktif["B"];
+		$ySkr = $Aktif["th"];
+		$yStr = $Aktif["TH"];
+		echo "<form id='formTgl' name='formTgl' method='post' action='$PHP_SHELF'>";
+	  	echo "<table width='50%' border='0' cellpadding='0' cellspacing='0'>";
+		echo "<tr bgcolor='#666600'>";
+		echo "<td width='13%' height='45' align='center'><input name='Pre' type='submit' id='Pre' value='&lt;&lt;' /></td>";
+		echo "<td height='45' colspan='5' align='center'><table width='70%' border='0'>";
+			echo "<tr>";
+			echo "  <td width='102' align='right' class='subHeader'><input name='BlnAktif' type='hidden' id='BlnAktif' value='$BlnSkr' />		$StrBlnSkr</td>";
+			echo "  <td width='10' class='subHeader'>&nbsp;</td>";
+			echo "  <td width='60' class='subHeader'><input name='yAktif' type='hidden' id='yAktif' value='$ySkr' />$yStr</td></tr>";
+			echo "</table></td>";
+		  echo "<td width='17%' height='45' align='center'><input name='Next' type='submit' id='Next' value='&gt;&gt;' /></td></tr>";
+		  	echo "</tr>";
+	 echo "</table>	</form>";
+		 $hsl = $BlnSkr % 12;
+		 if ($hsl == 0) {
+			 $bln = 12;
+		 } else {
+			 $bln = $hsl;
+		}
+		 return $Tgl = array ("b" => $bln,
+								"y" => $yStr);
+}
+
+//------------------------------- Record Count Data Hari Libur
+function RecordLibur($month,$year) {
+include("../libs/adodbcon.php");
+		$SQLquery = "SELECT *,DAY(HOLIDAYDATE),MONTH(HOLIDAYDATE),YEAR(HOLIDAYDATE) FROM KALENDERPERUSAHAAN WHERE (MONTH(HOLIDAYDATE) = $month AND  YEAR(HOLIDAYDATE) = $year)";
+		$rs = $conn->Execute($SQLquery) or die($conn->ErrorMsg());
+		$rs->MoveFirst();
+		return $RcAff = $rs->RecordCount();
+}
+
+//------------------------------------------- Data hari Libur
+function HariLiburSebulan($month,$year,$loop) {
+include("../libs/adodbcon.php");
+		$SQLquery = "SELECT *, DAY(HOLIDAYDATE), MONTH(HOLIDAYDATE),  YEAR(HOLIDAYDATE) FROM  KALENDERPERUSAHAAN WHERE (MONTH(HOLIDAYDATE) = $month AND  YEAR(HOLIDAYDATE) = $year) order by HOLIDAYDATE ASC";
+		$rs = $conn->Execute($SQLquery) or die($conn->ErrorMsg());
+		$rs->MoveFirst();
+		$a = 0;
+		while (!$rs->EOF) {
+			if ($loop == $a) {
+			return $ch = Array("0" => $rs->fields[0],
+									"1" => $rs->fields[1],
+									"2" => $rs->fields[2],
+									"3" => $rs->fields[3],
+									"4" => $rs->fields[4],
+									"5" => $rs->fields[5],
+									"6" => $rs->fields[6]);
+				break;
+			}
+			$rs->MoveNext();
+			$a = $a + 1;			
+		}
+}
+
+//--------------------------- Baca Hari Libur
+function Harilibur($month,$year,$date) {
+include("../libs/adodbcon.php");
+	  	$SQLquery = "SELECT  *, DAY(HOLIDAYDATE), MONTH(HOLIDAYDATE), YEAR(HOLIDAYDATE) FROM KALENDERPERUSAHAAN WHERE (MONTH(HOLIDAYDATE) = $month AND (YEAR(HOLIDAYDATE) = $year AND DAY(HOLIDAYDATE) = $date))";
+		$rs = $conn->Execute($SQLquery) or die($conn->ErrorMsg());
+		$rs->MoveFirst();
+		$a = 0;
+//		$ct = $rs->RecordCount();
+//		echo ",$ct";
+		while (!$rs->EOF) {
+			$ID = $rs->fields[0];
+			$KetName = $rs->fields[1];
+			$HDate = $rs->fields[2];
+			$HDur = $rs->fields[3];
+			$HDay = $rs->fields[4];
+			$HMonth = $rs->fields[5];
+			$HYear = $rs->fields[6];
+			for ($k==1;$k<=$HDur;$k++) {
+				if ($date==($HDay-($k-1))) {
+					return $Htgl = array ("Tgl" => $HDay,
+											"Dur" => $HDur,
+											"ID" => $ID,
+											"Ket" => $KetName);
+					//echo "$Htgl";
+					break;
+				}
+			}
+		
+		$rs->MoveNext();
+			$a = $a + 1;			
+		}
+}
+
+//--------------------------------------------Bulan & Tahin yang ditampilkan
+function MonthYearAktif($BlnAktif, $yAktif, $Kondisi) {
+	if ($Kondisi == 0) {
+		$BlnSkr = $BlnAktif + 1;
+		$Bl = date("F", mktime(0,0,0,$BlnSkr,1,$ySkr));
+		$StrBlnSkr = $Bl;
+		if (($BlnAktif % 12) == 0){
+			$ySkr = $yAktif + 1;
+		} else {
+			$ySkr = $yAktif;
+		}
+			$y = date("Y", mktime(0,0,0,1,1,$ySkr));
+			$yStr = $y;
+	} elseif ($Kondisi == 1) {
+		$BlnSkr = $BlnAktif - 1;
+		$Bl = date("F", mktime(0,0,0,$BlnSkr,1,$ySkr));
+		$StrBlnSkr = $Bl;
+		if (($BlnSkr % 12) == 0) {
+			$ySkr = $yAktif - 1;
+		} else {
+			$ySkr = $yAktif;
+		}
+			$y = date("Y", mktime(0,0,0,1,1,$ySkr));
+			$yStr = $y;
+	} else {
+		$BlnSkr = date("m");
+		$ySkr = date("y");
+		$StrBlnSkr = date("F");
+		$yStr = date("Y");
+	}
+		return $Aktif = array ("b" => $BlnSkr,
+								"B" => $StrBlnSkr,
+								"th" => $ySkr,
+									"TH" => $yStr);
+}
+
+//----------------------------------Mencari Jumlah Hari & angka dlm seminggu
+function Hari($BlnSkr,$ySkr) {
+	$JmlHari = date("t", mktime(0,0,0,$BlnSkr,1,$ySkr));
+	$strHr = date("D", mktime(0,0,0,$BlnSkr,1,$ySkr));
+	if ($strHr == "Mon") {
+		 $hari = 0;
+	} elseif ($strHr == "Tue") {
+		 $hari = 1;
+	} elseif ($strHr == "Wed") {
+		 $hari = 2;
+	} elseif ($strHr == "Thu") {
+		 $hari = 3;
+	} elseif ($strHr == "Fri") {
+		 $hari = 4;
+	} elseif ($strHr == "Sat") {
+		 $hari = 5;
+	} elseif ($strHr == "Sun") {
+		 $hari = 6;
+	}
+	return $Hari = array ("Jml" => $JmlHari,
+							"Hr" => $hari);
+}
+
+//fungsi tampil tanggal
+function TglMenu() {
+	$dateSkr = date('d');
+	for ($g=1;$g<=31;$g++) {
+		if ($g<10) {
+			$val = "0" . $g;
+		} else {
+			$val = $g;
+		}
+		if ($g == $dateSkr) {
+			echo "<option value='$val' selected>$g</option>";
+		} else {			
+			echo "<option value='$val'>$g</option>";
+		}
+	}
+}
+
+//Fungsi tampil bulan
+function BulanMenu() {
+			$monthSkr = date('m');
+			$Bulan = array ("Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
+			for ($g=1;$g<=12;$g++) {
+				if ($g<10) {
+					$val = "0" . $g;
+				} else {
+					$val = $g;
+				}
+					$a = $g - 1;
+					if ($g == $monthSkr) {
+			      		echo "<option value='$val' selected>$Bulan[$a]</option>";
+					} else {
+						echo "<option value='$val'>$Bulan[$a]</option>";
+					}			
+			}
+}
+
+//fungsi Tampil Tahun
+function TahunMenu() {
+	$yearSkr = date('Y');
+	for ($g=($yearSkr-5);$g<=($yearSkr+5);$g++) {
+		if ($g == $yearSkr) {
+			echo "<option value='$g' selected>$g</option>";
+		} else {
+			echo "<option value='$g'>$g</option>";
+		}			
+	}
+}
+
+//--------------------------- Cek Hari Libur (format date('Y-m-d'))
+function libur($date,$day,$ts) {
+include("../libs/adodbcon.php");
+		$HMonth = date('m',$ts);
+		$HYear = date('Y',$ts);
+	  	$SQLquery = "SELECT  *, DAY(HOLIDAYDATE), MONTH(HOLIDAYDATE), YEAR(HOLIDAYDATE) FROM KALENDERPERUSAHAAN WHERE (HOLIDAYDATE <= '$date') and ((MONTH(HOLIDAYDATE) = '$HMonth') and (YEAR(HOLIDAYDATE) = '$HYear'))";
+		$rs = $conn->Execute($SQLquery) or die($conn->ErrorMsg());
+		$rs->MoveFirst();
+		$k = 1;
+		if ($rs->RecordCount() > 0) {
+			while (!$rs->EOF) {
+				$ID = $rs->fields[0];
+				$KetName = $rs->fields[1];
+				$HDate = $rs->fields[2];
+				$HDur = $rs->fields[3];
+				$HDay = $rs->fields[4];
+				$HMonth = $rs->fields[5];
+				$HYear = $rs->fields[6];		
+				$rs->MoveNext();
+			}
+			for ($k==1;$k<=$HDur;$k++) {
+				$dayOff = ($HDay+($k-1));
+				if ($day == $dayOff) {
+					return $HLibur = "HOLIDAY";
+					break;
+				}
+			}
+		} else {
+			return $HLibur = "NOT_HOLIDAY";
+		}
+}
+
+//--------------------------- Cek Tidak Masuk (format date('Y-m-d'))
+function TidakMasuk($date,$day,$userId,$abHari,$ts) {
+include("../libs/adodbcon.php");
+		$HMonth = date('m',$ts);
+		$HYear = date('Y',$ts);
+		$SQLquery = "SELECT `tidak_masuk`.TDKMSKID, `tidak_masuk`.USERID, DAY(`tidak_masuk`.TDKMSKDATE), MONTH(`tidak_masuk`.TDKMSKDATE), YEAR(`tidak_masuk`.TDKMSKDATE),`tidak_masuk`.DURATION, `tidak_masuk`.TDKHADIRID, `keterangan_tidak_hadir`.KETCODE, `keterangan_tidak_hadir`.KETERANGAN, `tidak_masuk`.TDKMSKDATE FROM `tidak_masuk` INNER JOIN `keterangan_tidak_hadir` ON (`tidak_masuk`.TDKHADIRID = `keterangan_tidak_hadir`.TDKHADIR) WHERE ((`tidak_masuk`.USERID = $userId) AND  (TDKMSKDATE <= '$date')) order by `tidak_masuk`.TDKMSKDATE";
+		$rs = $conn->Execute($SQLquery) or die($conn->ErrorMsg());
+		$rs->MoveFirst();
+		if ($rs->RecordCount() > 0) {
+			while (!$rs->EOF) {
+				$ID = $rs->fields[0];
+				$usrId = $rs->fields[1];
+				$HDate = $rs->fields[2];
+				$HMonth = $rs->fields[3];
+				$HYear = $rs->fields[4];
+				$HDur = $rs->fields[5];
+				$HId = $rs->fields[6];
+				$HKode = $rs->fields[7];
+				$HKet = $rs->fields[8];		
+				$AwalPeriode = $rs->fields[9];		
+				$rs->MoveNext();
+			}
+			$DurasiTdkMsk = DurasiTambahan($AwalPeriode,$HDate,$HMonth,$HYear,$HDur);
+			if (($HKode == "C") || ($HKode == "DL") || ($HKode == "TB") ||   ($HKode == "DISP")) { 
+				$perAkhir = PeriodeAkhirTime($HMonth,$HDate,$HYear,$DurasiTdkMsk);
+			} else {
+				$perAkhir = PeriodeAkhirTime($HMonth,$HDate,$HYear,$HDur);
+			}
+			$AkhirPeriode = date('Y-m-d',$perAkhir);
+			if (($date >= $AwalPeriode) && ($date < $AkhirPeriode)) {
+				$Lib = CekHariLiburMinggu($ts);
+				if ($Lib == "Not") {
+					return $TdkMskDay = array ("ID" => "TDKMSK",
+											"Code" => $HKode);
+				} else {
+					if (($HKode == "C") || ($HKode == "DL") || ($HKode == "TB") || ($HKode == "DISP")) { 
+						return $TdkMskDay = array ("ID" => "TDKMSK",
+											"Code" => "*/**");
+					} else {
+						return $TdkMskDay = array ("ID" => "TDKMSK",
+											"Code" => $HKode);
+					}
+				}
+			}
+			//	echo "$inf";
+		} else {
+				return $TdkMskDay = array ("ID" => "MSK",
+										"Code" => "No_Code");
+		}
+}
+
+//--------------------------- Laporan Kehadiran Karyawan (format date('Y-m-d'))
+function LaporanAbsensiKerja($abTgl,$userId,$ts) {
+include("../libs/adodbcon.php");
+	$Squery = "SELECT  * FROM absensi 
+				WHERE (userid = $userId) and (ABSENSIDATE = '$abTgl') 
+				ORDER BY CHECKTIME";
+	$rsS = $conn->Execute($Squery) or die($conn->ErrorMsg());
+	$rsS->MoveFirst();
+	$abHari = date('D',$ts);
+	$abDay = date('d',$ts);
+	
+	//---------------Start Cari Shift Karyawan
+		$SchShiftKar= ScheduleShiftByDate($abTgl,$userId,$ts);
+		if ($SchShiftKar["ShiftId"] == "") {
+			$SchShiftId = 0;
+		} else {
+			$SchShiftId = $SchShiftKar["ShiftId"];
+			}
+		$SchSDate = $SchShiftKar["SDate"];
+		$SchEDate = $SchShiftKar["EDate"];
+	// --------------- End Cari Shift Karyawan
+
+	//---------------Start Cari Batas Check IN_Out
+		$BatasanCheck= ShiftTime($SchShiftId);
+		//$rc = $BatasanCheck[0]["rcAff"];
+			$BatasanCheck[0]["COUT_1"] = "";
+			$BatasanCheck[0]["COUT_2"] = "";
+			$BatasanCheck[1]["CIN_1"] = "";
+			$BatasanCheck[1]["CIN_2"] = "";
+		if ($BatasanCheck[0]["rcAff"] == "") {
+			$BatAwal_1 = "11:00:00";
+			$BatAkhir_1 = "13:00:00";
+			$BatAwal_2 = "13:00:00";
+			$BatAkhir_2 = "15:00:00";
+		} elseif ($BatasanCheck[0]["rcAff"] == 1) {
+			$BatAwal_1 = $BatasanCheck[0]["COUT_1"];
+			$BatAkhir_1 = $BatasanCheck[0]["COUT_2"];
+			$BatAwal_2 = $BatasanCheck[0]["COUT_2"];
+			$BatAkhir_2 = "15:00:00";
+		} else {
+			$BatAwal_1 = $BatasanCheck[0]["COUT_1"];
+			$BatAkhir_1 = $BatasanCheck[0]["COUT_2"];
+			$BatAwal_2 = $BatasanCheck[1]["CIN_1"];
+			$BatAkhir_2 = $BatasanCheck[1]["CIN_2"];
+		}
+	// --------------- End Cari Batas Check IN_Out
+	$Ch_Swap_In_1 = "-";
+	$Ch_Swap_Out_1 = "-";
+	$Ch_Swap_In_2 = "-";
+	$Ch_Swap_Out_2 = "-";
+	if ($rsS->RecordCount() > 0) {
+		while (!$rsS->EOF) {
+			$abId = $rsS->fields[0];
+			$abDate = $rsS->fields[2];
+			$abJam = $rsS->fields[3];
+			if ($abJam < $BatAwal_1) {
+				$Ch_Swap_In_1 = $abJam;
+			} elseif (($abJam >= $BatAwal_1) and ($abJam <= $BatAkhir_1)) {
+				$Ch_Swap_Out_1 = $abJam;
+			} elseif (($abJam > $BatAwal_2) and ($abJam <= $BatAkhir_2)) {
+				$Ch_Swap_In_2 = $abJam;
+			} else {
+				$Ch_Swap_Out_2 = $abJam;									
+			}
+			$rsS->MoveNext();
+		} //------ end While
+
+		//Kondisi Jika Tidak ada data dari masing-masing swap
+			if ($Ch_Swap_In_1 == "") {
+					$Ch_Swap_In_1 = "-";
+			}
+			if ($Ch_Swap_Out_1 == "") {
+					$Ch_Swap_Out_1 = "-";
+			}
+			if ($Ch_Swap_In_2 == "") {
+					$Ch_Swap_In_2 = "-";
+			}
+			if ($Ch_Swap_Out_2 == "") {
+					$Ch_Swap_Out_2 = "-";
+			} //-----------end Kondisi
+
+		//-------------Cek Libur untuk OT
+		$Lib = CekHariLiburMinggu($ts);
+		if ($Lib == "Not") {
+			$OT = "No_OT";
+		} else {
+			$OT = "Yes_OT";
+		}
+
+		$Ket = "Hadir";
+	} else {
+		$HTdk = TidakMasuk($abTgl,$abDay,$userId,$abHari,$ts);
+		if ($HTdk["ID"] == "TDKMSK"){ //---Cek Tidak Masuk dengan Keterangan
+			$Ket = $HTdk["Code"];
+		} elseif ($abHari == "Sun") { //-------------Cek Hari Minggu
+			$Ket = "*/**";
+		} else {
+			$HLibur = libur($abTgl,$abDay,$ts); //---------Cek Hari Libur
+			if ($HLibur == "HOLIDAY") {
+				$Ket = "*/**";									
+			} else {
+				$Ket = "TMTB";
+			}
+		} //--End Cek Tidak Masuk dengan Keterangan
+		$Ch_Swap_In_1 = "-";
+		$Ch_Swap_Out_1 = "-";							
+		$Ch_Swap_In_2 = "-";
+		$Ch_Swap_Out_2 = "-";
+		$OT = "No_OT";
+	}
+	return $VarAbsen = array ("C_IN_1" => $Ch_Swap_In_1,
+								"C_OUT_1" => $Ch_Swap_Out_1,
+								"C_IN_2" => $Ch_Swap_In_2,
+								"C_OUT_2" => $Ch_Swap_Out_2,
+								"KetTdkMsk" => $Ket,
+								"RcShift" => $BatasanCheck[0]["rcAff"],
+								"OT" => $OT);
+}
+
+//--------------------------- Cari Shift & Time Table
+function ShiftTime($ShiftId) {
+include("../libs/adodbcon.php");
+	  	$SQLquery = "SELECT `setting_shift`.SHIFTNAME, `waktu_shift`.SDAYS,  `waktu_shift`.EDAYS, `setting_waktu`.WKTID, `setting_waktu`.SCHNAME,  `setting_waktu`.SWORKTIME, `setting_waktu`.EWORKTIME,  `setting_waktu`.LATEMNT, `setting_waktu`.EARLYMNT,  `setting_waktu`.CIN1,  `setting_waktu`.CIN2, `setting_waktu`.COUT1,  `setting_waktu`.COUT2,  `setting_waktu`.BTSAPEL,  `setting_waktu`.WORKDAY FROM  `waktu_shift`  INNER JOIN `setting_shift` ON (`waktu_shift`.SHIFTID = `setting_shift`.SHIFTID)  INNER JOIN `setting_waktu` ON (`waktu_shift`.WKTID = `setting_waktu`.WKTID) WHERE  `waktu_shift`.SHIFTID = $ShiftId";
+		//echo "$SQLquery";
+		$rs = $conn->Execute($SQLquery) or die($conn->ErrorMsg());
+		$rs->MoveFirst();
+		if ($rs->RecordCount() > 0) {
+			$a = 0;
+			while (!$rs->EOF) {
+				$ShName = $rs->fields[0];
+				$SDays = $rs->fields[1];
+				$EDays = $rs->fields[2];
+				$WktID = $rs->fields[3];
+				$SchName = $rs->fields[4];
+				$SWorkTime = $rs->fields[5];
+				$EWorkTime = $rs->fields[6];		
+				$LateMnt = $rs->fields[7];
+				$EarlyMnt = $rs->fields[8];
+				$CIN_1 = $rs->fields[9];
+				$CIN_2 = $rs->fields[10];
+				$COUT_1 = $rs->fields[11];
+				$COUT_2 = $rs->fields[12];
+				$BTSApel = $rs->fields[13];		
+				$WorkDay = $rs->fields[14];	
+				if ($a == 0) {
+					return $TdkMskDay = @array (array (	"ShName" => $ShName,
+											"SDays" => $SDays,
+											"EDays" => $EDays,
+											"WktId" => $WktID,
+											"SchName" => $SchName,
+											"SWorkTime" => $SWorkTime,
+											"EWorkTime" => $EWorkTime,	
+											"LateMnt" => $LateMnt,
+											"EarlyMnt" => $EarlyMnt,
+											"CIN_1" => $CIN_1,
+											"CIN_2" => $CIN_2,
+											"COUT_1" => $COUT_1,
+											"COUT_2" => $COUT_2,
+											"BTSApel" => $BTSApel,		
+											"WorkDay" => $WorkDay,
+											"rcAff" => $rs->RecordCount()
+										));
+				} else {
+					return $TdkMskDay = @array (array (	"ShName" => $TdkMskDay["ShName"],
+										"SDays" => $TdkMskDay["SDays"],
+										"EDays" => $TdkMskDay["EDays"],
+										"WktId" => $TdkMskDay["WktID"],
+										"SchName" => $TdkMskDay["SchName"],
+										"SWorkTime" => $TdkMskDay["SWorkTime"],
+										"EWorkTime" => $TdkMskDay["EWorkTime"],	
+										"LateMnt" => $TdkMskDay["LateMnt"],
+										"EarlyMnt" => $TdkMskDay["EarlyMnt"],
+										"CIN_1" => $TdkMskDay["CIN_1"],
+										"CIN_2" => $TdkMskDay["CIN_2"],
+										"COUT_1" => $TdkMskDay["COUT_1"],
+										"COUT_2" => $TdkMskDay["COUT_2"],
+										"BTSApel" => $TdkMskDay["BTSApel"],
+										"WorkDay" => $TdkMskDay["WorkDay"],
+										"rcAff" => $TdkMskDay["rcAff"]
+										),
+									array (	"ShName" => $ShName,
+											"SDays" => $SDays,
+											"EDays" => $EDays,
+											"WktId" => $WktID,
+											"SchName" => $SchName,
+											"SWorkTime" => $SWorkTime,
+											"EWorkTime" => $EWorkTime,	
+											"LateMnt" => $LateMnt,
+											"EarlyMnt" => $EarlyMnt,
+											"CIN_1" => $CIN_1,
+											"CIN_2" => $CIN_2,
+											"COUT_1" => $COUT_1,
+											"COUT_2" => $COUT_2,
+											"BTSApel" => $BTSApel,		
+											"WorkDay" => $WorkDay,
+											"rcAff" => $rs->RecordCount()
+										));				
+					}
+				$rs->MoveNext();
+				$a++;
+			}
+		} 
+}
+
+//--------------------------- Cari Schedule Shift Karyawan untuk Tanggal Tertentu (format date('Y-m-d'))
+function ScheduleShiftByDate($abTgl,$userId,$ts) {
+include("../libs/adodbcon.php");
+	$Squery = "SELECT  * FROM schedule_shift_pegawai WHERE (userid = $userId) order by SDATE,EDATE Asc";
+	//echo "$Squery<br>";
+	$rsS = $conn->Execute($Squery) or die($conn->ErrorMsg());
+	$rsS->MoveFirst();
+	if ($rsS->RecordCount() > 0) {
+		$a = 0;
+		while (!$rsS->EOF) {
+				$ShiftId = $rsS->fields[0];
+				$SDate = $rsS->fields[1];
+				$EDate = $rsS->fields[2];
+				if (($abTgl >= $SDate) and ($abTgl <= $EDate)) {
+					return $VarScheduleShift = array ("ShiftId" => $ShiftId,
+												"SDate" => $SDate,
+												"EDate" => $EDate
+												);
+					break;
+				}
+				//echo "$a";
+				$rsS->MoveNext();
+				$a++;
+			}
+		} 
+}
+
+//Menampilkan TimeStamp Tanggal Akhir Periode dengan durasi (format tgl input (mm-dd-yyyy))
+function PeriodeAkhirTime($fromDay,$fromMonth,$fromYear,$Durasi) {
+	//echo "$fromDay, $fromMonth, $fromYear<br>";
+	$fromDate = mktime(0, 0, 0, $fromDay, $fromMonth, $fromYear);
+
+	$beginTimestamp = $fromDate;
+	for ($ts = 0; $ts < $Durasi; $ts++) {
+			$beginTimestamp = $beginTimestamp + 86400;
+	}
+	return $TimestampAkhir = $beginTimestamp;
+}
+
+//--------Cek Hari Libur Dalam Periode Untuk Penambahan Durasi Tidak Masuk Karena adanya Hari Libur (format tgl input (dd-mm-yyyy))
+function DurasiTambahan($AwalPeriode,$HDate,$HMonth,$HYear,$HDur) {
+	$fromDate = mktime(0, 0, 0, $HMonth, $HDate, $HYear);
+	$beginTimestamp = $fromDate;
+	$DurasiTdkMsk = $HDur;
+	for ($ts = 0; $ts < $HDur; $ts++) {
+		$informasi = CekHariLiburMinggu($beginTimestamp);
+		if ($informasi == "Not") {
+			$DurasiTdkMsk = $DurasiTdkMsk;
+		} else {
+			$DurasiTdkMsk++;
+		}
+			$beginTimestamp = $beginTimestamp + 86400;
+	}
+	Return $DurasiTdkMsk;
+}	//End Cek Hari Libur Dalam Periode--------------------
+
+
+//--------Cek Hari Libur Nasional atau Hari Minggu
+function CekHariLiburMinggu($beginTimestamp) {
+	$Minggu = date('D',$beginTimestamp);
+	if ($Minggu == "Sun") {
+		$info = "Sunday";
+	} else {
+		$awalDate = date('Y-m-d',$beginTimestamp);
+		$aTgl = date('d',$beginTimestamp);
+		$HLibur = libur($awalDate,$aTgl,$beginTimestamp);
+		if ($HLibur == "HOLIDAY") {
+			$info = "Holiday";
+		} else {
+//			$DurasiTdkMsk = $DurasiTdkMsk;
+			$info = "Not";
+		}
+	}
+	return $info;
+}
+?>
